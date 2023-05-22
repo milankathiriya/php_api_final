@@ -1,0 +1,57 @@
+Database
+
+SQL => Structured Query Language
+
+1. Create a database
+=> CREATE DATABASE dbName;
+
+2. Create a Table
+=> CREATE TABLE tableName(
+    col1 datatype [constraints],    
+    col2 datatype [constraints],
+    col3 datatype [constraints],
+    .
+    .
+    .
+    colN datatype [constraints],
+);
+
+3. Insert a Record
+=> INSERT INTO tablename(col1, col2, ..., colN) VALUES(val1, val2, ..., valN);
+
+4. Select all Records
+=> SELECT col1, col2, ..., colN FROM tableName;
+=> SELECT * FROM tableName;
+
+5. Select filtered Records
+=> SELECT * FROM tableName WHERE condition1 [AND|OR] condition2 [AND|OR] ... conditionN;
+
+6. Update a Record
+=> UPDATE tableName SET col1=val, col2=val, ..., colN=val WHERE conditions;
+
+7. Delete a Record
+=> DELETE FROM tableName WHERE condition;
+
+8. Delete all Records
+=> DELETE FROM tableName;
+=> TRUNCATE TABLE tableName;
+
+9. Delete a Table
+=> DELETE TABLE tableName;
+
+10. Delete Database
+=> DELETE DATABASE dbName;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
