@@ -17,10 +17,10 @@
             return $this->conn; // bool
         }
 
-        public function insert_student($name, $age, $course) {
+        public function insert_student($name, $age, $course, $image) {
             $this->connect();
 
-            $query = "INSERT INTO $this->STUDENTS_TABLE(name, age, course) VALUES('$name', $age, '$course');";
+            $query = "INSERT INTO $this->STUDENTS_TABLE(name, age, course, image) VALUES('$name', $age, '$course', '$image');";
 
             $res = mysqli_query($this->conn, $query);  
 
@@ -40,9 +40,21 @@
         public function delete_student($id) {
             $this->connect();
 
+            $qs = "SELECT * FROM $this->STUDENTS_TABLE WHERE id=$id;";
+
+            $obj = mysqli_query($this->conn, $qs);
+
+            $fetched_record = mysqli_fetch_assoc($obj);
+
+            $isFileRemoved = unlink('uploads/' . $fetched_record['image']);   // returns bool
+
             $query = "DELETE FROM $this->STUDENTS_TABLE WHERE id=$id;";
 
-            $res = mysqli_query($this->conn, $query);
+            if($isFileRemoved) {
+                $res = mysqli_query($this->conn, $query);
+            } else {
+                return false;
+            }
 
             return $res;  // total no. of deleted records
         }

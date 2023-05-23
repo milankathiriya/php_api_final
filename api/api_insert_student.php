@@ -14,15 +14,31 @@
         $name = $_POST['name'];
         $age = $_POST['age'];
         $course = $_POST['course'];
-        
-        $res = $config->insert_student($name, $age, $course);
+        $image = $_FILES['image'];     // a.array
 
-        if($res) {
-            $arr['data'] = "Student inserted successfully...";
-            http_response_code(201);
+        $filename = $image['name'];
+        $temp_path = $image['tmp_name'];
+
+        $uid = uniqid();
+
+        $img_name = $uid . "-" . $filename;
+
+        $destination_path = "../uploads/" . $img_name;
+
+        $isFileUpload = move_uploaded_file($temp_path, $destination_path);  // returns bool
+
+        if($isFileUpload) {
+            $res = $config->insert_student($name, $age, $course, $img_name);
+
+            if($res) {
+                $arr['data'] = "Student inserted successfully...";
+                http_response_code(201);
+            } else {
+                $arr['data'] = "Student insertion failed...";
+            }
         } else {
             $arr['data'] = "Student insertion failed...";
-        }
+        }        
 
     } else {
         $arr['data'] = "only POST request is allowed...";

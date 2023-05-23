@@ -10,14 +10,31 @@
         $name = $_REQUEST['name'];
         $age = $_REQUEST['age'];
         $course = $_REQUEST['course'];
+        $image = $_FILES['image'];     // a.array
 
-        $res = $config->insert_student($name, $age, $course);
+        $filename = $image['name'];
+        $temp_path = $image['tmp_name'];
 
-        if($res) {
-            header("Location: success.php");
+        $uid = uniqid();
+
+        $img_name = $uid . "-" . $filename;
+
+        $destination_path = "uploads/" . $img_name;
+
+        $isFileUpload = move_uploaded_file($temp_path, $destination_path);  // returns bool
+
+        if($isFileUpload) {
+            $res = $config->insert_student($name, $age, $course, $img_name);
+
+            if($res) {
+                header("Location: success.php");
+            } else {
+                echo "Student insertion failed...";
+            }
         } else {
-            echo "Student insertion failed...";
+            echo "File upload failed...";
         }
+        
     }
 
     if(isset($_REQUEST['delete_id'])) {
@@ -72,10 +89,11 @@
     
         <div class="container mt-5">
             <div class="col col-4">
-                <form action="" method="POST">
+                <form action="" method="POST" enctype="multipart/form-data">
                     Name: <input class="form-control" name="name" type="text" value="<?php if($single_fetched_student!=null) { echo $single_fetched_student['name']; } ?>" /> <br />
                     Age: <input class="form-control" name="age" type="number" value="<?php if($single_fetched_student!=null) { echo $single_fetched_student['age']; } ?>" /> <br />
                     Course: <input class="form-control" name="course" type="text" value="<?php if($single_fetched_student!=null) { echo $single_fetched_student['course']; } ?>" /> <br />
+                    Image: <input class="form-control" name="image" type="file"  /> <br />
 
                     <button class="btn <?php if(@$_REQUEST['edit_id']) { echo "btn-info"; } else { echo "btn-primary"; } ?>" name="<?php if(@$_REQUEST['edit_id']) { echo "btn_update"; } else { echo "btn_add"; } ?>">
                         <?php if(@$_REQUEST['edit_id']) { echo "UPDATE"; } else { echo "ADD"; } ?>
@@ -88,6 +106,7 @@
                     <thead>
                         <tr>
                             <th>ID</th>
+                            <th>Image</th>
                             <th>Name</th>
                             <th>Age</th>
                             <th>Course</th>
@@ -99,6 +118,9 @@
                     <?php while($record = mysqli_fetch_assoc($fetched_students_obj)) { ?>
                         <tr>
                             <td><?php echo $record['id']; ?></td>
+                            <td>
+                                <img src="uploads/<?php echo $record['image']; ?>" height="120px" width="120px" alt="OK">
+                            </td>
                             <td><?php echo $record['name']; ?></td>
                             <td><?php echo $record['age']; ?></td>
                             <td><?php echo $record['course']; ?></td>
